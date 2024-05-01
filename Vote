@@ -1,0 +1,35 @@
+# команда для создания опросов
+@client.command()
+async def create_poll(ctx, question, *options):
+    # проверка на наличие вопроса и как минимум двух вариантов ответов
+    if not question or len(options) < 2:
+        await ctx.send("Пожалуйста, укажите вопрос и как минимум два варианта ответов.")
+        return
+
+    # формирование текста опроса
+    poll_message = f"**{question}**\n\n" + "\n".join([f"{index + 1}. {option}" for index, option in enumerate(options)])
+
+    # отправка опроса и добавление реакций для голосования
+    poll = await ctx.send(poll_message)
+    for index in range(len(options)):
+        await poll.add_reaction(chr(0x1F1E6 + index))
+
+# команда для голосования
+@client.command()
+async def vote(ctx, poll_id, option_number: int):
+    # получение сообщения с опросом по его ID
+    poll_message = await ctx.fetch_message(poll_id)
+
+    # проверка на существование опроса
+    if not poll_message:
+        await ctx.send("Не удалось найти опрос с указанным ID.")
+        return
+
+    # проверка на существование варианта ответа
+    if not 0 < option_number <= len(poll_message.reactions):
+        await ctx.send("Указан некорректный вариант ответа.")
+        return
+
+    # добавление голоса за выбранный вариант ответа
+    await poll_message.add_reaction(chr(0x1F1E6 + option_number - 1))
+    await ctx.send("Ваш голос учтен.")
