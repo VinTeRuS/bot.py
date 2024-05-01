@@ -1,6 +1,21 @@
 import discord
 from discord.ext import commands
 
+# обработчик события готовности бота
+@client.event
+async def on_ready():
+    print('Бот готов к работе.')
+
+# команда для создания опросов
+@client.command()
+async def create_poll(ctx, question, *options):
+    # ваша реализация команды create_poll
+
+# команда для голосования
+@client.command()
+async def vote(ctx, poll_id, option_number: int):
+    # ваша реализация команды vote
+
 # создаем объект бота
 client = commands.Bot(command_prefix='!')
 
