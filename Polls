@@ -1,0 +1,17 @@
+# команда для создания опросов
+@client.command()
+async def create_poll(ctx, question, *options):
+    # проверяем, что вопрос и варианты ответов были указаны
+    if not question or len(options) < 2:
+        await ctx.send("Пожалуйста, укажите вопрос и как минимум два варианта ответов.")
+        return
+    
+    # создаем сообщение с вопросом и вариантами ответов
+    poll_message = f"**{question}**\n\n"
+    for index, option in enumerate(options):
+        poll_message += f"{index + 1}. {option}\n"
+    
+    # отправляем сообщение с опросом и добавляем реакции для голосования
+    poll = await ctx.send(poll_message)
+    for index in range(len(options)):
+        await poll.add_reaction(chr(0x1F1E6 + index))  # добавляем эмодзи для голосования
